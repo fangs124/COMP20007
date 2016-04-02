@@ -8,7 +8,14 @@
 
 /* Returns a pointer to a new graph with order vertices */
 Graph new_graph(int order) {
-    return NULL;
+	Graph graph;
+	graph->order = order;
+	graph->size = 0;
+
+	/* assign memory for vertices */
+	graph->vertices = (Vertex) malloc(sizeof(*graph->vertices) * order);
+	assert(graph->vertices != NULL);
+    return graph;
 }
 
 /* Returns whether aim and vertex are pointing to the same location */
@@ -23,7 +30,10 @@ bool id_eq(void *aim, void *vertex) {
 
 /* Add the edge from v1 to v2 to graph */
 void add_edge(Graph graph, int v1, int v2) {
-
+	graph->size++;
+	graph->vertices[v1].out = push(graph->vertices[v1].out, v2);
+	graph->vertices[v2].in  = push(graph->vertices[v2].in , v1);
+	return;
 }
 
 /* Free the memory allocated to graph */
