@@ -7,7 +7,7 @@
 #include "graph.h"
 
 /* Returns a pointer to a new graph with order vertices */
-Graph new_graph(int order) {
+Graph new_graph(int order){
 	Graph graph;
 	graph->order = order;
 	graph->size = 0;
@@ -29,7 +29,7 @@ bool id_eq(void *aim, void *vertex) {
 }
 
 /* Add the edge from v1 to v2 to graph */
-void add_edge(Graph graph, int v1, int v2) {
+void add_edge(Graph graph, int v1, int v2){
 	graph->size++;
 	graph->vertices[v1].out = push(graph->vertices[v1].out, v2);
 	graph->vertices[v2].in  = push(graph->vertices[v2].in , v1);
