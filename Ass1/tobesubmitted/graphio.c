@@ -34,24 +34,24 @@ void assign_vertex(Vertex vertex, int id, char *buffer){ //created
     vertex->out = NULL;
     
     /* length of label */
-    size_t label_len = strlen(buffer) - 1; //compensating for '\n' and '\0'
+    size_t label_len = strlen(buffer); //compensating for '\n'
 
     /* assign memory for label */
-    vertex->label = malloc(label_len);
+    vertex->label = (char*) malloc(label_len);
     assert(vertex->label != NULL);
 
     vertex->label = memcpy(vertex->label, buffer, label_len);
-    vertex->label[label_len] = '\0'; //replacing '\n' with '\0'
+    vertex->label[label_len-1] = '\0'; //replacing '\n' with '\0'
     return;
 }
 
 /* Assigns value pair form buffer to the edge: [v1, v2] */
 void get_value_pair(int *edge, char *buffer){ //created
-    int start = 0; //starting index of v1
+    int start = 0; //starting index of v1 or v2
     int digit_count = 0;
-    char *ptr;
+    char *ptr = buffer;
 
-    for(ptr = buffer; ptr != '\0'; ptr++){
+    while(*ptr != '\0'){
         switch(*ptr){
             /* assign v1 to edge: [v1, v2] */
             case ' ': 
@@ -61,18 +61,19 @@ void get_value_pair(int *edge, char *buffer){ //created
                 break;
             /* assign v2 to edge: [v1, v2] */
             case '\n':
-                edge[1] = atoi(&buffer[start])
+                edge[1] = atoi(&buffer[start]);
                 break;
             /* count digit */
             default:
-                if(*ptr < '0' || *ptr > '9'){ //if char is not a number
+                if(*ptr >= '0' || *ptr <= '9'){ 
+                    digit_count += 1; //char should be numeric
+                }
+                else{
                     fprintf(stderr, "Error: invalid char\n");
                     exit(EXIT_FAILURE);
                 }
-                else{
-                    digit_count++;
-                }
         }
+        ptr += 1;
     }
     return;
 }
@@ -89,7 +90,11 @@ Graph load_graph(char *input){ //impelemented
     assert(buffer != NULL);
 
     int n; //vertex index
-    int edge[2]; //ordered pair of vertices: [v1, v2]
+    int *edge; //ordered pair of vertices: [v1, v2]
+    
+    /* assign memory for edge */
+    edge = (int*) malloc(sizeof(int) * 2);
+    assert(edge != NULL);
 
     Graph graph;
     input_stage stage = VCOUNT;
@@ -106,7 +111,7 @@ Graph load_graph(char *input){ //impelemented
             case VLABEL:
                 /* process nth vertex */
                 assign_vertex(&graph->vertices[n], n, buffer);
-                n++;
+                n += 1;
                 if(n == graph->order){
                     stage = DEDGES;
                 }
@@ -114,7 +119,7 @@ Graph load_graph(char *input){ //impelemented
             /* assign directed edges */
             case DEDGES:
                 /* get [v1, v2] from buffer */
-                get_value_pair(&edge[0], buffer);
+                get_value_pair(edge, buffer);
                 /* create edge [v1, v2] */
                 add_edge(graph, edge[0], edge[1]);
                 break;
@@ -132,7 +137,47 @@ Graph load_graph(char *input){ //impelemented
 }
 
 /* Prints the graph */
-void print_graph(char *output, Graph graph){
+void print_graph(char *output, Graph graph){ //implemented
+    /* open file */
+    FILE *file = fopen(output, "w");
+
+    /* print header */
+    fprintf(file, "digraph {\n");
+
+    int i, n; //vertex indexes
+    List ptr;
+
+    /* iterate through each vertex */
+    for(i = 0; i < graph->order; i++){
+        /* print vertex i */
+        fprintf(file, " ");
+        
+        /* print all edges of vertex i */
+        ptr = graph->vertices[i].out;
+        if(ptr != NULL){
+            print_vertex_label(file, &graph->vertices[i]);
+            fprintf(file, "-> {");
+            
+            /* print vertex n */
+            while(ptr != NULL){
+                n = (int)ptr->data;
+                print_vertex_label(file, &graph->vertices[n]);
+                ptr = ptr->next;
+            }
+            fprintf(file, "}");
+        }
+
+        /* edge case handling */
+        else if(ptr == NULL){
+            //as observed on t1.dot, ass1 was not printed with extra space.
+            fprintf(file, " %s", graph->vertices[i].label);
+        }
+        fprintf(file, "\n");
+    }
+
+    /* print tail */
+    fprintf(file, "}\n");
+    return;
 }
 
 /* Prints the destination vertex label surrounded by spaces */
