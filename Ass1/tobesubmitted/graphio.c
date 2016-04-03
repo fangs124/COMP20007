@@ -89,7 +89,7 @@ Graph load_graph(char *input){ //impelemented
     char *buffer = (char*) malloc(sizeof(char) * MAX_LINE_LEN);
     assert(buffer != NULL);
 
-    int n; //vertex index
+    int i; //vertex index
     int *edge; //ordered pair of vertices: [v1, v2]
     
     /* assign memory for edge */
@@ -110,9 +110,9 @@ Graph load_graph(char *input){ //impelemented
             /* assign vertex labels */
             case VLABEL:
                 /* process nth vertex */
-                assign_vertex(&graph->vertices[n], n, buffer);
-                n += 1;
-                if(n == graph->order){
+                assign_vertex(&graph->vertices[i], i, buffer);
+                i += 1;
+                if(i == graph->order){
                     stage = DEDGES;
                 }
                 break;
@@ -144,7 +144,7 @@ void print_graph(char *output, Graph graph){ //implemented
     /* print header */
     fprintf(file, "digraph {\n");
 
-    int i, n; //vertex indexes
+    int i; //vertex index
     List ptr;
 
     /* iterate through each vertex */
@@ -158,10 +158,9 @@ void print_graph(char *output, Graph graph){ //implemented
             print_vertex_label(file, &graph->vertices[i]);
             fprintf(file, "-> {");
             
-            /* print vertex n */
+            /* print vertices reachable from  vertex i */
             while(ptr != NULL){
-                n = (int)ptr->data;
-                print_vertex_label(file, &graph->vertices[n]);
+                print_vertex_label(file, (Vertex)ptr->data);
                 ptr = ptr->next;
             }
             fprintf(file, "}");

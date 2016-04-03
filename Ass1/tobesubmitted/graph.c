@@ -23,19 +23,21 @@ Graph new_graph(int order){ //implemented
 
 /* Returns whether aim and vertex are pointing to the same location */
 bool ptr_eq(void *aim, void *vertex) { //implemented, not tested nor used.
-    return(bool)((Vertex)aim == (Vertex)vertex);
+    return(bool)( (Vertex)aim == (Vertex)vertex );
 }
 
 /* Returns whether aim and vertex have the same id */
 bool id_eq(void *aim, void *vertex) { //implemented
-	return(bool)((int)aim == (int)vertex);
+	return(bool)( ((Vertex)aim)->id == ((Vertex)vertex)->id );
 }
 
 /* Add the edge from v1 to v2 to graph */
-void add_edge(Graph graph, int v1, int v2){ //implemented
+void add_edge(Graph graph, int v1, int v2){ //implemented //ruler issue
 	graph->size++;
-	graph->vertices[v1].out = push(graph->vertices[v1].out, v2);
-	graph->vertices[v2].in  = push(graph->vertices[v2].in , v1);
+	graph->vertices[v1].out = 
+		push(graph->vertices[v1].out, &graph->vertices[v2]);
+	graph->vertices[v2].in  = 
+		push(graph->vertices[v2].in , &graph->vertices[v1]);
 	return;
 }
 

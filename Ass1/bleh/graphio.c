@@ -66,14 +66,14 @@ void get_value_pair(int *edge, char *buffer){ //created
             /* count digit */
             default:
                 if(*ptr >= '0' || *ptr <= '9'){ 
-                    digit_count++; //char should be numeric
+                    digit_count += 1; //char should be numeric
                 }
                 else{
                     fprintf(stderr, "Error: invalid char\n");
                     exit(EXIT_FAILURE);
                 }
         }
-        ptr++;
+        ptr += 1;
     }
     return;
 }
@@ -111,7 +111,7 @@ Graph load_graph(char *input){ //impelemented
             case VLABEL:
                 /* process nth vertex */
                 assign_vertex(&graph->vertices[n], n, buffer);
-                n++;
+                n += 1;
                 if(n == graph->order){
                     stage = DEDGES;
                 }
@@ -169,7 +169,7 @@ void print_graph(char *output, Graph graph){ //implemented
 
         /* edge case handling */
         else if(ptr == NULL){
-            //as observed on t1.dot, ass1 is printed as: ' ' + ass1 + '\n' 
+            //as observed on t1.dot, ass1 was not printed with extra space.
             fprintf(file, " %s", graph->vertices[i].label);
         }
         fprintf(file, "\n");
