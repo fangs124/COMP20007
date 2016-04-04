@@ -1,4 +1,11 @@
 /*
+ * COMP20007 Design of Algorithms
+ * Semester 1 2016
+ *
+ * NAME: Adrian Hendrawan Putra
+ * ID  : 743206
+ * DESC: 0x7c
+ *       Provides basic graph-manipulation function
  *
 */
 #include <stdlib.h>
@@ -7,7 +14,7 @@
 #include "graph.h"
 
 /* Returns a pointer to a new graph with order vertices */
-Graph new_graph(int order){ //implemented
+Graph new_graph(int order){
 	/* assign memory for graph */
 	Graph graph = (Graph) malloc(sizeof(*graph));
 	assert(graph != NULL);
@@ -23,16 +30,16 @@ Graph new_graph(int order){ //implemented
 
 /* Returns whether aim and vertex are pointing to the same location */
 bool ptr_eq(void *aim, void *vertex) { //implemented, not tested nor used.
-    return(bool)((Vertex)aim == (Vertex)vertex);
+    return(bool)( (Vertex)aim == (Vertex)vertex );
 }
 
 /* Returns whether aim and vertex have the same id */
 bool id_eq(void *aim, void *vertex) { //implemented
-	return(bool)((int)aim == (int)vertex);
+	return(bool)( ((Vertex)aim)->id == ((Vertex)vertex)->id );
 }
 
 /* Add the edge from v1 to v2 to graph */
-void add_edge(Graph graph, int v1, int v2){ //implemented
+void add_edge(Graph graph, int v1, int v2){ //implemented //ruler issue
 	graph->size++;
 	graph->vertices[v1].out = 
 		push(graph->vertices[v1].out, &graph->vertices[v2]);
@@ -42,6 +49,17 @@ void add_edge(Graph graph, int v1, int v2){ //implemented
 }
 
 /* Free the memory allocated to graph */
-void free_graph(Graph graph) {
+void free_graph(Graph graph){ //implemented
+	int i; //vertex index
 
+	//need to free: in out label vertices graph
+	/* iterate through each vertex */
+    for(i = 0; i < graph->order; i++){
+    	free_list(graph->vertices[i].in);
+    	free_list(graph->vertices[i].out);
+    	free(graph->vertices[i].label);
+    }
+    free(graph->vertices);
+    free(graph);
+    return;
 }

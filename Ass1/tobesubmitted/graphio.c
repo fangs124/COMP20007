@@ -89,7 +89,7 @@ Graph load_graph(char *input){ //impelemented
     char *buffer = (char*) malloc(sizeof(char) * MAX_LINE_LEN);
     assert(buffer != NULL);
 
-    int i; //vertex index
+    int i = 0; //vertex index
     int *edge; //ordered pair of vertices: [v1, v2]
     
     /* assign memory for edge */

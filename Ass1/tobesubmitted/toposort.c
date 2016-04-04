@@ -20,7 +20,7 @@ void dfs_traverse(Vertex n, List* sorted, bool *visited, bool *added){ //created
 		return;
 	}
 
-	/* mark nth vertex visited */
+	/* mark vertex n visited */
 	visited[n->id] = true;
 
 	/* traverse through all outgoing edges of vertex n */
@@ -39,6 +39,7 @@ void dfs_traverse(Vertex n, List* sorted, bool *visited, bool *added){ //created
 
 /* Returns a list of topologically sorted vertices using the DFS method */
 List dfs_sort(Graph graph) { //implemented
+	
 	/* create auxilary boolean arrays */
 	int order = graph->order;
 	bool visited[order];
@@ -66,7 +67,7 @@ List dfs_sort(Graph graph) { //implemented
 
 /* removal part of dfs_sort, removes edge(n,m) */
 void kahn_remove_edge(Vertex n, Vertex m, int *edge_count){ //created
-	del(id_eq, n, m->in);
+	del(id_eq, n, &m->in);
 	*edge_count -= 1;	
 	return;
 }
@@ -125,32 +126,34 @@ List kahn_sort(Graph graph) { //implemented
 /* Uses graph to verify vertices are topologically sorted */
 bool verify(Graph graph, List vertices) { //todo
     int order = graph->order;
-    int n; //vertex index
+    int i; //vertex index
 
-    /* create array for checked vertices */
-    bool checked[order];
+    /* create array for visited vertices */
+    bool visited[order];
 
     /* initialize array */
-    for(n = 0; n < order; n++){
-    	processed[i] = false;
+    for(i = 0; i < order; i++){
+    	visited[i] = false;
     }
 
     List ptr = vertices;
     List edges;
     /* check through sorted vertices */
     while(ptr != NULL){
-    	n = ((Vertex)ptr->data)->id;
-    	/* check if vertices are equal equal*/
-    	if(ptr_eq(&graph->vertices[n] , ptr->data) == false){
-    		return false;
+    	i = ((Vertex)ptr->data)->id;
+
+    	/* mark vertex visited */
+    	visited[i] = true;
+
+    	/* check if any reachable vertex is visited */
+    	edges = ((Vertex)ptr->data)->out;
+    	while(edges != NULL){
+    		if(visited[((Vertex)edges->data)->id] == true){
+    			return false;
+    		}
+    		edges = edges->next;
     	}
-    	/* check for incomming edges of vertex n */
-    	if((find( , &graph->vertices[n].out) != NULL)
-
-
-
     	ptr = ptr->next;
     }
-
-    return false;
+    return true;
 }

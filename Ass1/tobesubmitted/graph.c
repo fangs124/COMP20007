@@ -1,4 +1,11 @@
 /*
+ * COMP20007 Design of Algorithms
+ * Semester 1 2016
+ *
+ * NAME: Adrian Hendrawan Putra
+ * ID  : 743206
+ * DESC: 0x7c
+ *       Provides basic graph-manipulation function
  *
 */
 #include <stdlib.h>
@@ -7,7 +14,7 @@
 #include "graph.h"
 
 /* Returns a pointer to a new graph with order vertices */
-Graph new_graph(int order){ //implemented
+Graph new_graph(int order){
 	/* assign memory for graph */
 	Graph graph = (Graph) malloc(sizeof(*graph));
 	assert(graph != NULL);
@@ -42,6 +49,17 @@ void add_edge(Graph graph, int v1, int v2){ //implemented //ruler issue
 }
 
 /* Free the memory allocated to graph */
-void free_graph(Graph graph) {
+void free_graph(Graph graph){ //implemented
+	int i; //vertex index
 
+	//need to free: in out label vertices graph
+	/* iterate through each vertex */
+    for(i = 0; i < graph->order; i++){
+    	free_list(graph->vertices[i].in);
+    	free_list(graph->vertices[i].out);
+    	free(graph->vertices[i].label);
+    }
+    free(graph->vertices);
+    free(graph);
+    return;
 }
