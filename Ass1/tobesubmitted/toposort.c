@@ -1,31 +1,73 @@
 /*
+ * COMP20007 Design of Algorithms
+ * Semester 1 2016
+ *
+ * NAME: Adrian Hendrawan Putra
+ * ID  : 743206
+ * DESC: 0x7c
+ *       Implementation of dfs and kahn topological sorting algorithms.
  *
 */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 
 #include "toposort.h"
 
-/* recursive part of dfs_sort */
-void dfs_traverse(Vertex n, List* sorted, bool *visited, bool *added){ //created
+/* Recursive part of dfs_sort */
+void dfs_traverse(Vertex n, List* sorted, bool *visited, bool *added);
+
+/* Removal part of dfs_sort, removes edge(n,m) */
+void kahn_remove_edge(Vertex n, Vertex m, int *edge_count);
+
+/* Returns a list of topologically sorted vertices using the DFS method */
+List dfs_sort(Graph graph) {
+	/* create auxilary boolean arrays */
+	int order = graph->order;
+	bool visited[order];  //temporary
+	bool added[order];    //permanent
+
+	int i; //vertex index
+	List sorted = NULL;
+
+	/* initialize auxilary boolean arrays */
+	for(i = 0; i < order; i++) {
+		visited[i] = false;
+		added[i] = false;
+	}
+
+	/* traverse all the vertices in graph */
+	for(i = 0; i < order; i++) {
+		/* skip added vertices */
+		if(added[i] == true) {
+			continue;
+		}
+		dfs_traverse(&graph->vertices[i], &sorted, &visited[0], &added[0]);
+	}
+
+    return sorted;
+}
+
+/* Recursive part of dfs_sort */
+void dfs_traverse(Vertex n, List* sorted, bool *visited, bool *added) {
 	/* check for cyclicity */
-	if(visited[n->id] == true){
+	if(visited[n->id] == true) {
 		fprintf(stderr, "E: graph is cyclical\n");
 		exit(EXIT_FAILURE);
 	}
 	
 	/* skip added vertices */
-	if(added[n->id] == true){
+	if(added[n->id] == true) {
 		return;
 	}
 
 	/* mark vertex n visited */
 	visited[n->id] = true;
 
-	/* traverse through all outgoing edges of vertex n */
+	/* traverse through all reachable vertices of vertex n */
 	List ptr = n->out;
-	while(ptr != NULL){
+	while(ptr != NULL) {
 		dfs_traverse((Vertex)ptr->data, sorted, visited, added);
 		ptr = ptr->next;
 	}
@@ -34,48 +76,15 @@ void dfs_traverse(Vertex n, List* sorted, bool *visited, bool *added){ //created
 	*sorted = push(*sorted, n);
 	added[n->id] = true;
 	visited[n->id] = false;
+
 	return;
 }
 
-/* Returns a list of topologically sorted vertices using the DFS method */
-List dfs_sort(Graph graph) { //implemented
-	
-	/* create auxilary boolean arrays */
-	int order = graph->order;
-	bool visited[order]; //temporary
-	bool added[order]; //permanent
-
-	int i; //vertex index
-	List sorted = NULL; //holds sorted list of vertices
-
-	/* initialize auxilary boolean arrays */
-	for(i = 0; i < order; i++){
-		visited[i] = false;
-		added[i] = false;
-	}
-
-	/* traverse the graph through nth vertex */
-	for(i = 0; i < order; i++){
-		/* skip added vertices */
-		if(added[i] == true){
-			continue;
-		}
-		dfs_traverse(&graph->vertices[i], &sorted, &visited[0], &added[0]);
-	}
-    return sorted;
-}
-
-/* removal part of dfs_sort, removes edge(n,m) */
-void kahn_remove_edge(Vertex n, Vertex m, int *edge_count){ //created
-	del(id_eq, n, &m->in);
-	*edge_count -= 1;	
-	return;
-}
 
 /* Returns a list of topologically sorted vertices using the Kahn method */
-List kahn_sort(Graph graph) { //implemented
+List kahn_sort(Graph graph) {
 	/* create relevant lists */
-	List sorted = NULL; //holds sorted list of vertices
+	List sorted = NULL;
 	List source = NULL; //sources are verices with no incoming edges
 
 	int i; //vertex index
@@ -85,29 +94,29 @@ List kahn_sort(Graph graph) { //implemented
 	List ptr;
     
     /* find all source vertices */
-	for(i = 0; i < order; i++){
-		if(graph->vertices[i].in == NULL){
+	for(i = 0; i < order; i++) {
+		if(graph->vertices[i].in == NULL) {
 			source = push(source, &graph->vertices[i]);
 		}
 	}
 
-	while(source != NULL){
+	while(source != NULL) {
 		/* retrieve vertex n */
 		n = (Vertex) pop(&source);
 
 		/* add n to tail of sorted list */
 		insert(n, &sorted);
 
-		/* traverse through all edges of vertex n */
+		/* traverse through all reachable vertices of vertex n */
 		ptr = n->out;
-		while(ptr != NULL){
+		while(ptr != NULL) {
 			m = (Vertex) ptr->data;
 
 			/* remove edge(n,m) */
 			kahn_remove_edge(n, m, &edge_count);
 
 			/* check if vertex m is a source vertex */
-			if(m->in == NULL){
+			if(m->in == NULL) {
 				/* add m to source */
 				source = push(source, m);
 			}
@@ -116,15 +125,23 @@ List kahn_sort(Graph graph) { //implemented
 	}
 
 	/* check for cyclicity */
-	if(edge_count != 0){
+	if(edge_count != 0) {
 		fprintf(stderr, "E: graph is cyclical\n");
 		exit(EXIT_FAILURE);
 	}
+
     return sorted;
 }
 
+/* Removal part of dfs_sort, removes edge(n,m) */
+void kahn_remove_edge(Vertex n, Vertex m, int *edge_count) {
+	del(ptr_eq, n, &m->in);
+	*edge_count -= 1;	
+	return;
+}
+
 /* Uses graph to verify vertices are topologically sorted */
-bool verify(Graph graph, List vertices) { //todo
+bool verify(Graph graph, List vertices) {
     int order = graph->order;
     int i; //vertex index
 
@@ -132,28 +149,30 @@ bool verify(Graph graph, List vertices) { //todo
     bool visited[order];
 
     /* initialize array */
-    for(i = 0; i < order; i++){
+    for(i = 0; i < order; i++) {
     	visited[i] = false;
     }
 
     List ptr = vertices;
     List edges;
+
     /* check through sorted vertices */
-    while(ptr != NULL){
+    while(ptr != NULL) {
     	i = ((Vertex)ptr->data)->id;
 
-    	/* mark vertex visited */
+    	/* mark ith vertex visited */
     	visited[i] = true;
 
-    	/* check if any reachable vertex is visited */
+    	/* check for all reachable vertices of ith vertex */
     	edges = ((Vertex)ptr->data)->out;
-    	while(edges != NULL){
-    		if(visited[((Vertex)edges->data)->id] == true){
+    	while(edges != NULL) {
+    		if(visited[((Vertex)edges->data)->id] == true) {
     			return false;
     		}
     		edges = edges->next;
     	}
     	ptr = ptr->next;
     }
+
     return true;
 }

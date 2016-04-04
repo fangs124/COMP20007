@@ -42,8 +42,8 @@ List dfs_sort(Graph graph) { //implemented
 	
 	/* create auxilary boolean arrays */
 	int order = graph->order;
-	bool visited[order];
-	bool added[order];
+	bool visited[order]; //temporary
+	bool added[order]; //permanent
 
 	int i; //vertex index
 	List sorted = NULL; //holds sorted list of vertices
@@ -67,7 +67,7 @@ List dfs_sort(Graph graph) { //implemented
 
 /* removal part of dfs_sort, removes edge(n,m) */
 void kahn_remove_edge(Vertex n, Vertex m, int *edge_count){ //created
-	del(id_eq, n, &m->in);
+	del(ptr_eq, n, &m->in);
 	*edge_count -= 1;	
 	return;
 }
