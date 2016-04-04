@@ -42,8 +42,8 @@ List dfs_sort(Graph graph) { //implemented
 	
 	/* create auxilary boolean arrays */
 	int order = graph->order;
-	bool visited[order];
-	bool added[order];
+	bool visited[order]; //temporary
+	bool added[order]; //permanent
 
 	int i; //vertex index
 	List sorted = NULL; //holds sorted list of vertices
