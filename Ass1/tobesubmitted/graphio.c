@@ -88,7 +88,7 @@ Graph load_graph(char *input) {
     /* free allocated memory */
     free(buffer);
     buffer = NULL;
-    free(edge)
+    free(edge);
     edge = NULL;
 
     return graph;
