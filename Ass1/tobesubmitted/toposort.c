@@ -85,14 +85,16 @@ List kahn_sort(Graph graph) {
     List source = NULL; //sources are verices with no incoming edges
 
     int order = graph->order;
-    int edge_count = graph->size;
     int i, j; //vertex index
     List ptr;
     Vertex n, m;
 
 
     /* initialize auxilary data structures */
-    int in_edges[order] = {0}; //counts number of incoming edges, -1 if
+    int in_edges[order]; //counts number of incoming edges, -1 if added to source
+    for(i = 0; i < order; i++) {
+        in_edges[i] = 0;
+    }
 
     for(i = 0; i < order; i++) {
         /* check if vertex i is a source */
@@ -114,8 +116,8 @@ List kahn_sort(Graph graph) {
     while(source != NULL) {
         n = (Vertex) pop(&source);
 
-        /* add n to tail of sorted list */
-        insert(n, &sorted);
+        /* add n to head of sorted list */
+        sorted = push(sorted, n);
 
         ptr = n->out;
         while(ptr != NULL) {
@@ -144,11 +146,11 @@ List kahn_sort(Graph graph) {
         }
     }
 
-    return sorted;
+    return reverse(sorted);
 }
 
 /* Uses graph to verify vertices are topologically sorted */
-bool verify(Graph graph, List vertices) {
+bool verify(Graph graph, List vertices) { //null graph
     int order = graph->order;
     int i; //vertex index
 
