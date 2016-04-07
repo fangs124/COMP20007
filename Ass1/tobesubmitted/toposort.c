@@ -18,6 +18,9 @@
 /* Recursive part of dfs_sort */
 void dfs_traverse(Vertex n, List* sorted, bool *visited, bool *added);
 
+/* Removal part of dfs_sort, removes edge(n,m) */
+void kahn_remove_edge(Vertex n, Vertex m, int *edge_count);
+
 /* Returns a list of topologically sorted vertices using the DFS method */
 List dfs_sort(Graph graph) {
     /* create auxilary boolean arrays */
@@ -84,67 +87,57 @@ List kahn_sort(Graph graph) {
     List sorted = NULL;
     List source = NULL; //sources are verices with no incoming edges
 
-    int order = graph->order;
-    int edge_count = graph->size;
-    int i, j; //vertex index
-    List ptr;
+    int i; //vertex index
     Vertex n, m;
-
-
-    /* initialize auxilary data structures */
-    int in_edges[order] = {0}; //counts number of incoming edges, -1 if
-
+    int edge_count = graph->size;
+    int order = graph->order;
+    List ptr;
+    
+    /* find all source vertices */
     for(i = 0; i < order; i++) {
-        /* check if vertex i is a source */
         if(graph->vertices[i].in == NULL) {
-            in_edges[i] = -1;
             source = push(source, &graph->vertices[i]);
-        }
-        ptr = graph->vertices[i].out;
-        
-        /* update auxilary data structures */
-        while(ptr != NULL) {
-            j = ((Vertex)ptr->data)->id;
-            in_edges[j] += 1;
-            ptr = ptr->next;
         }
     }
 
-    /* retrieve vertex n from source list*/
     while(source != NULL) {
+        /* retrieve vertex n */
         n = (Vertex) pop(&source);
 
         /* add n to tail of sorted list */
         insert(n, &sorted);
 
+        /* traverse through all reachable vertices of vertex n */
         ptr = n->out;
         while(ptr != NULL) {
             m = (Vertex) ptr->data;
 
-            /* remove edge (n, m) */
-            in_edges[m->id] -= 1;
+            /* remove edge(n,m) */
+            kahn_remove_edge(n, m, &edge_count);
 
             /* check if vertex m is a source vertex */
-            if(in_edges[m->id] == 0){
+            if(m->in == NULL) {
                 /* add m to source */
-                in_edges[m->id] = -1;
                 source = push(source, m);
             }
-
             ptr = ptr->next;
         }
-
     }
 
     /* check for cyclicity */
-    for(i = 0; i < order; i++){
-        if(in_edges[i] != -1){
-            fprintf(stderr, "E: graph is cyclical\n");
-            exit(EXIT_FAILURE);
-        }
+    if(edge_count != 0) {
+        fprintf(stderr, "E: graph is cyclical\n");
+        exit(EXIT_FAILURE);
     }
 
     return sorted;
+}
+
+/* Removal part of dfs_sort, removes edge(n,m) */
+void kahn_remove_edge(Vertex n, Vertex m, int *edge_count) {
+    del(ptr_eq, n, &m->in);
+    *edge_count -= 1;   
+    return;
 }
 
 /* Uses graph to verify vertices are topologically sorted */
