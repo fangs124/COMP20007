@@ -36,7 +36,7 @@ void assign_vertex(Vertex vertex, int id, char *buffer);
 void get_value_pair(int *edge, char *buffer);
 
 /* Loads the graph from input */
-Graph load_graph(char *input) { //need to do case for null graph
+Graph load_graph(char *input) {
     /* open file */
     FILE *file = fopen(input, "r");
 
