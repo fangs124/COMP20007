@@ -21,12 +21,20 @@ heap_t* create_heap(void) {
 int insert(heap_t* h, uint index, float key) {
 	assert(h != NULL);
 
+	/* allocate heap size */
 	if(h->size = 0){
 		h->size = INITIAL_HEAP_SIZE;
 		h->H = (item_t*) malloc(sizeof(item_t) * INITIAL_HEAP_SIZE);
 		h->map = (uint*) malloc(sizeof(uint) * INITIAL_HEAP_SIZE);
 	}
-	//else if()
+	/* double heap size */
+	else if(h->n == h->size){
+		h->size *= 2;
+		h->H = (item_t*) realloc(h->H, sizeof(item_t) * h->size);
+		h->map = (uint*) realloc(h->map, sizeof(uint) * h->size);
+	}
+
+	/* create item insert item */
 	
 }
 /* returns the data index of the root */

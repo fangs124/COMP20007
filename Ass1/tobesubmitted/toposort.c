@@ -22,8 +22,8 @@ void dfs_traverse(Vertex n, List* sorted, bool *visited, bool *added);
 List dfs_sort(Graph graph) {
     /* create auxilary boolean arrays */
     int order = graph->order;
-    bool visited[order];  //temporary
-    bool added[order];    //permanent
+    bool visited[order]; //temporary
+    bool added[order];   //permanent
 
     int i; //vertex index
     List sorted = NULL;
@@ -90,8 +90,9 @@ List kahn_sort(Graph graph) {
     Vertex n, m;
 
 
-    /* initialize auxilary data structures */
-    int in_edges[order]; //counts number of incoming edges, -1 if added to source
+    /* initialize auxilary array */
+    //counts number of incoming edges, -1 if added to source
+    int in_edges[order]; 
     for(i = 0; i < order; i++) {
         in_edges[i] = 0;
     }
@@ -150,7 +151,7 @@ List kahn_sort(Graph graph) {
 }
 
 /* Uses graph to verify vertices are topologically sorted */
-bool verify(Graph graph, List vertices) { //null graph
+bool verify(Graph graph, List vertices) {
     int order = graph->order;
     int i; //vertex index
 
