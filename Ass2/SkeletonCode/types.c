@@ -24,20 +24,24 @@ void int_print(FILE *file, long e) {
     fprintf(file, " %ld", e);
 }
 
+// implement this
 /* Returns whether str1 is equal to str2 */
 bool str_eq(char *str1, char *str2) {
 	//assert that strings are non-empty
 	return (bool) memcmp(str1, str2);
 }
 
+//implement this
 /* Returns a copy of src */
 char *str_copy(char *src) {
 	//assert that string is non-empty
 	size_t n = strlen(src)+1;
 	char *new_str = (char*) malloc(sizeof(char)*n);
 	return memcpy(new_str, src, n);
+	//need to check for correctness
 }
 
+//implement this
 /* Prints str to file */
 void str_print(FILE *file, char *str) {
 	fprintf(file, " %s", str);
