@@ -9,7 +9,11 @@
 
 /* Used as the second hashing function on double hash */
 unsigned int linear_probe(void *e, unsigned int size) {
-    return 0;
+    //implement this
+    //not quiet sure if this is right
+    (void) e;
+    (void) size;
+    return 1;
 }
 
 /* Very simple hash */
