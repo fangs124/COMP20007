@@ -26,34 +26,15 @@ void int_print(FILE *file, long e) {
 
 /* Returns whether str1 is equal to str2 */
 bool str_eq(char *str1, char *str2) {
-    return !(bool) strcmp(str2, str1);
+    return false;
 }
 
 /* Returns a copy of src */
 char *str_copy(char *src) {
-	//check this
-    
-    //strip '\n' char from string and replace with '\n';
-    char *new_str;
-    unsigned int n = strlen(src);
-
-    if(src[n-1] == '\n'){
-        new_str = (char*) malloc(sizeof(char)*n-1);
-        strncpy(new_str, src, n-1);
-        new_str[n] = '\0';
-    }
-    else{
-        new_str = (char*) malloc(sizeof(char)*n);
-        strncpy(new_str, src, n);
-    }
-
-    return new_str;
+    return NULL;
 }
 
 /* Prints str to file */
 void str_print(FILE *file, char *str) {
-	fprintf(file, " %s", str);
 }
-
-//implement this
 

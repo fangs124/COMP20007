@@ -18,7 +18,7 @@
 #include "hashtable.h"
 
 #define DEFAULT_SIZE 11
-#define NUM_COLLISIONS 20
+#define NUM_COLLISIONS 5
 
 /* Store the configuration options from the command line */
 typedef struct {

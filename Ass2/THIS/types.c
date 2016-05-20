@@ -2,6 +2,10 @@
  * COMP20007 Design of Algorithms
  * Semester 1 2016
  *
+ * NAME: Adrian Hendrawan Putra
+ * ID  : 743206
+ * DESC: 0x7c
+ *
  * Clement Poh (cpoh@unimelb.edu.au)
  *
  * This module provides fundamental functionality used to
@@ -26,34 +30,28 @@ void int_print(FILE *file, long e) {
 
 /* Returns whether str1 is equal to str2 */
 bool str_eq(char *str1, char *str2) {
-    return !(bool) strcmp(str2, str1);
+    return !(bool) strcmp(str2, str1); //invert return value
 }
 
 /* Returns a copy of src */
 char *str_copy(char *src) {
-	//check this
-    
-    //strip '\n' char from string and replace with '\n';
-    char *new_str;
-    unsigned int n = strlen(src);
+    assert(src != NULL);
 
-    if(src[n-1] == '\n'){
-        new_str = (char*) malloc(sizeof(char)*n-1);
-        strncpy(new_str, src, n-1);
-        new_str[n] = '\0';
-    }
-    else{
-        new_str = (char*) malloc(sizeof(char)*n);
-        strncpy(new_str, src, n);
-    }
+    
+    /* allocate memory */
+    size_t len = strlen(src)-1; //exclude '\n'
+    char *new_str = (char*) malloc(sizeof(char)*len);
+    assert(new_str != NULL);
+    
+    /* copy string */
+    strncpy(new_str, src, len);
+    new_str[len] = '\0'; //guarantees '0'-terminated
 
     return new_str;
 }
 
 /* Prints str to file */
 void str_print(FILE *file, char *str) {
-	fprintf(file, " %s", str);
+    fprintf(file, " %s", str);
 }
-
-//implement this
 
